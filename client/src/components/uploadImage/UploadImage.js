@@ -4,15 +4,25 @@ import { Input } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addFile } from '../../redux/uploadFiles';
+import { IKContext, IKImage, IKUpload } from 'imagekitio-react';
 
 const UploadImage = (props) => {
+
+    //imageKIt URLS and keys
+    const publicKey = 'public_id0Y6bD/FhF9HuAO5owFSKY1lWU='; 
+    const authenticationEndpoint = 'http://localhost:3001/auth';
+    const urlEndpoint = 'https://ik.imagekit.io/7mt7kit6w';
+    const onError = err => {
+    console.log("Error", err);
+    };
+
+    const onSuccess = res => {
+    console.log("Success", res);
+    };
+    //
+
     const [files, setFiles] = useState([]);
     const hiddenFileInput = useRef(null);
-    const filesArray = [];
-    const filesValue = []
-
-    const { filesToUpload } = useSelector(state => state.uploadFiles.filesToUpload)
-
     const dispatch = useDispatch();
   
     // Programatically click the hidden file input element
@@ -39,18 +49,33 @@ const UploadImage = (props) => {
                     <p>drag and drop files to upload</p>
                 </div>
                 <div className="col-lg-6">
-                <Button colorScheme='blue'
-                    onClick={handleClick}
-                >
-                    Upload a file
-                </Button>
-                <input multiple
-                    type="file"
-                    ref={hiddenFileInput}
-                    onChange={handleChange}
-                   
-                    style={{display: 'none'}} 
-                />
+                    <IKContext
+                        urlEndpoint={urlEndpoint}
+                        publicKey={publicKey}
+                        authenticationEndpoint={authenticationEndpoint}
+                    >
+                        <IKUpload
+                        fileName="test-upload.png"
+                        onError={onError}
+                        onSuccess={onSuccess}
+                        // style={{display: 'none'}}
+                        >
+                            {/* <Button colorScheme='blue'
+                                onClick={handleClick}
+                            >
+                                Upload a file
+                            </Button> */}
+                        </IKUpload>
+                
+                        
+                        {/* <input multiple
+                            type="file"
+                            ref={hiddenFileInput}
+                            onChange={handleChange}
+                            
+                            style={{display: 'none'}} 
+                        /> */}
+                </IKContext>
                 </div>
             </div>
 
